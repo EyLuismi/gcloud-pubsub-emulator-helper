@@ -129,7 +129,7 @@ func (c *Configuration) Sync(client utils.Client) {
 	// Applying information in the configuration
 	for _, project := range c.Projects {
 		for _, topic := range project.Topics {
-			pubsub.CreateTopic(client, project.Name, pubsub.GetResourceNameForTopic(project.Name, topic.Name))
+			pubsub.CreateTopic(client, project.Name, pubsub.GetResourceNameForTopic(project.Name, topic.Name), &topic.Labels)
 			for _, subscription := range topic.Subscriptions {
 				pubsub.CreateSubscription(
 					client,

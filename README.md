@@ -18,7 +18,8 @@ In the future, I plan to add a Web User Interface to visualize basic data from t
 
 - [X] Load JSON configuration file
 - [X] Basic sync between the emulator and the provided configuration
-- [ ] Support for Labels
+- [X] Support for Labels in Topics
+- [ ] Support for Labels in Subscriptions
 - [ ] Support for Message Storage Policy
 - [ ] Support for KMS Key Name
 - [ ] Support for Schemas
@@ -109,6 +110,7 @@ The `projects` array defines the Pub/Sub projects.
 - **`name`** *(string)* - Name of the project.
 - **`topics`** *(array)* - List of topics within the project.
   - **`name`** *(string)* - Name of the topic.
+  - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the topic
   - **`subscriptions`** *(array)* - List of subscriptions for the topic.
     - **`name`** *(string)* - Name of the subscription.
 

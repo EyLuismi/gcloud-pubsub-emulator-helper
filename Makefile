@@ -7,7 +7,9 @@ GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 BINARY_NAME=basicLoader
-BINARY_UNIX=$(BINARY_NAME)_unix
+BUILD_DIR=build
+BINARY_PATH=$(BUILD_DIR)/$(BINARY_NAME)
+BINARY_UNIX=$(BINARY_PATH)_unix
 
 # All target
 all: test build
@@ -18,17 +20,19 @@ test:
 
 # Build target
 build:
-	$(GOBUILD) -o $(BINARY_NAME) ./cmd/headless
+	mkdir -p $(BUILD_DIR)
+	$(GOBUILD) -o $(BINARY_PATH) ./cmd/headless
 
 # Clean target
 clean:
 	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
+	rm -f $(BINARY_PATH)
 	rm -f $(BINARY_UNIX)
+	rm -rf $(BUILD_DIR)
 
 # Run target
-run:
-	./$(BINARY_NAME)
+run: build
+	./$(BINARY_PATH) -config ./full.example.json
 
 # Dependency management
 deps:

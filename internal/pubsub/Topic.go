@@ -20,6 +20,7 @@ type Topic struct {
 func CreateTopic(
 	client utils.Client,
 	project, topicResourceName string,
+	labels *Labels,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -30,8 +31,23 @@ func CreateTopic(
 		return nil
 	}
 
+	type CreateTopicBody struct {
+		Labels Labels `json:"labels"`
+	}
+
+	createTopicBody := CreateTopicBody{}
+
+	if labels != nil {
+		createTopicBody.Labels = *labels
+	}
+
+	jsonCreateTopicBody, err := json.Marshal(createTopicBody)
+	if err != nil {
+		return err
+	}
+
 	// Create the topic with an empty configuration.
-	response, err := client.Put(topicResourceName, []byte("{}"))
+	response, err := client.Put(topicResourceName, jsonCreateTopicBody)
 	if err != nil {
 		return err
 	}

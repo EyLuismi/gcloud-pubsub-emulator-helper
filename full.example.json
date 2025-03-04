@@ -1,0 +1,25 @@
+{
+  "delayBeforeStartupCheckMs": 0,
+  "avoidStartupCheck": false,
+  "startTimeoutMs": 30000,
+  "timeBetweenStartupChecksMs": 200,
+  "projects": [
+    {
+      "name": "advanced-configuration-example",
+      "topics": [
+        {
+          "name": "advanced.configuration.example.topic",
+          "labels": {
+            "isAdvanced": "true",
+            "owner": "admin"
+          },
+          "subscriptions": [
+            {
+              "name": "advanced.configuration.example.subscription1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
