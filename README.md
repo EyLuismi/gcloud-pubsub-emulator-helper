@@ -16,14 +16,14 @@ In the future, I plan to add a Web User Interface to visualize basic data from t
 > [!NOTE]
 > The following features are designed based on the Pub/Sub REST API documentation. Some of them might be removed if they are not supported by the emulator.
 
-- ✅ Load JSON configuration file
-- ✅ Basic sync between the emulator and the provided configuration
-- ⬜ Support for Labels
-- ⬜ Support for Message Storage Policy
-- ⬜ Support for KMS Key Name
-- ⬜ Support for Schemas
-- ⬜ Support for State
-- ⬜ Additional Web GUI build entry
+- [X] Load JSON configuration file
+- [X] Basic sync between the emulator and the provided configuration
+- [ ] Support for Labels
+- [ ] Support for Message Storage Policy
+- [ ] Support for KMS Key Name
+- [ ] Support for Schemas
+- [ ] Support for State
+- [ ] Additional Web GUI build entry
 
 🔗 [GCloud Pub/Sub REST API Documentation](https://cloud.google.com/pubsub/docs/reference/rest)
 
