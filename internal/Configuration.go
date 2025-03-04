@@ -142,6 +142,7 @@ func (c *Configuration) Sync(client utils.Client) {
 						project.Name,
 						topic.Name,
 					),
+					&subscription.Labels,
 				)
 			}
 		}

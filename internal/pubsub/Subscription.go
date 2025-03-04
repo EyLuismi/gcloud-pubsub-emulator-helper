@@ -93,6 +93,7 @@ func IsSubscriptionPresent(
 func CreateSubscription(
 	client utils.Client,
 	project, subscriptionResourceName, topicResourceName string,
+	labels *Labels,
 ) error {
 	exists, err := IsSubscriptionPresent(client, project, subscriptionResourceName)
 	if err != nil {
@@ -103,10 +104,18 @@ func CreateSubscription(
 	}
 
 	// Prepare the request body.
-	type createSubscriptionBody struct {
-		Topic string `json:"topic"`
+	type CreateSubscriptionBody struct {
+		Topic  string `json:"topic"`
+		Labels Labels `json:"labels"`
 	}
-	rawBody, err := json.Marshal(createSubscriptionBody{Topic: topicResourceName})
+
+	createSubscriptionBody := CreateSubscriptionBody{Topic: topicResourceName}
+
+	if labels != nil {
+		createSubscriptionBody.Labels = *labels
+	}
+
+	rawBody, err := json.Marshal(createSubscriptionBody)
 	if err != nil {
 		return err
 	}

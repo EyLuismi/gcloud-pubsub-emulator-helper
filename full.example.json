@@ -15,7 +15,12 @@
           },
           "subscriptions": [
             {
-              "name": "advanced.configuration.example.subscription1"
+              "name": "advanced.configuration.example.subscription1",
+              "labels": {
+                "isAdvanced": "true",
+                "owner": "consumers",
+                "programmingLanguage": "GoLang"
+              }
             }
           ]
         }
