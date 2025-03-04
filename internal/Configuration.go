@@ -87,7 +87,7 @@ func (c Configuration) ReplaceHost(host string) Configuration {
 * TODO: In the future, it should have an option to just update what is required
 * 	to preserve data in those topics/subscriptions
  */
-func (c *Configuration) Sync(client utils.Client) {
+func (c *Configuration) Sync(client utils.ClientInterface) {
 	// Wait until the emulator is running
 	if !c.AvoidStartupCheck {
 		startTime := time.Now()

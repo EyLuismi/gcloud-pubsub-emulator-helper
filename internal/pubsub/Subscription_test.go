@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateTopic(t *testing.T) {
+func TestCreateSubscription(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusNotFound}, Error: nil},
@@ -16,56 +16,56 @@ func TestCreateTopic(t *testing.T) {
 		},
 	}
 
-	err := CreateTopic(mockClient, "test-project", "projects/test-project/topics/test-topic", nil)
+	err := CreateSubscription(mockClient, "test-project", "projects/test-project/subscriptions/test-subscription", "projects/test-project/topics/test-topic", nil)
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(mockClient.RequestHistory))
 	assert.Equal(t, http.MethodGet, mockClient.RequestHistory[0].Method)
-	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[0].Path)
+	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[0].Path)
 	assert.Equal(t, http.MethodPut, mockClient.RequestHistory[1].Method)
-	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[1].Path)
+	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[1].Path)
 }
 
-func TestIsTopicPresent(t *testing.T) {
+func TestIsSubscriptionPresent(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},
 		},
 	}
 
-	exists, err := IsTopicPresent(mockClient, "projects/test-project/topics/test-topic")
+	exists, err := IsSubscriptionPresent(mockClient, "test-project", "projects/test-project/subscriptions/test-subscription")
 	assert.NoError(t, err)
 	assert.True(t, exists)
 	assert.Equal(t, 1, len(mockClient.RequestHistory))
 	assert.Equal(t, http.MethodGet, mockClient.RequestHistory[0].Method)
-	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[0].Path)
+	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[0].Path)
 }
 
-func TestListTopics(t *testing.T) {
+func TestListSubscriptions(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
-			{Response: utils.Response{StatusCode: http.StatusOK, Body: []byte(`{"topics":[{"name":"test-topic"}]}`)}, Error: nil},
+			{Response: utils.Response{StatusCode: http.StatusOK, Body: []byte(`{"subscriptions":[{"name":"test-subscription"}]}`)}, Error: nil},
 		},
 	}
 
-	topics, err := ListTopics(mockClient, "test-project")
+	subscriptions, err := ListSubscriptions(mockClient, "test-project")
 	assert.NoError(t, err)
-	assert.Equal(t, 1, len(topics))
-	assert.Equal(t, "test-topic", topics[0].Name)
+	assert.Equal(t, 1, len(subscriptions))
+	assert.Equal(t, "test-subscription", subscriptions[0].Name)
 	assert.Equal(t, 1, len(mockClient.RequestHistory))
 	assert.Equal(t, http.MethodGet, mockClient.RequestHistory[0].Method)
-	assert.Equal(t, "projects/test-project/topics", mockClient.RequestHistory[0].Path)
+	assert.Equal(t, "projects/test-project/subscriptions", mockClient.RequestHistory[0].Path)
 }
 
-func TestDeleteTopic(t *testing.T) {
+func TestDeleteSubscription(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},
 		},
 	}
 
-	err := DeleteTopic(mockClient, "test-project", "projects/test-project/topics/test-topic")
+	err := DeleteSubscription(mockClient, "test-project", "projects/test-project/subscriptions/test-subscription")
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(mockClient.RequestHistory))
 	assert.Equal(t, http.MethodDelete, mockClient.RequestHistory[0].Method)
-	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[0].Path)
+	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[0].Path)
 }

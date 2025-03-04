@@ -154,3 +154,52 @@ func IsValidHost(host string) bool {
 
 	return true
 }
+
+type MockClientHistoryRequest struct {
+	Method string
+	Path   string
+	Body   []byte
+}
+
+type MockClientHistoryResponse struct {
+	Response Response
+	Error    error
+}
+
+type MockClient struct {
+	RequestHistory  []MockClientHistoryRequest
+	ResponseHistory []MockClientHistoryResponse
+}
+
+func (m *MockClient) makeCall(method string, path string, body []byte) (Response, error) {
+	m.RequestHistory = append(m.RequestHistory, MockClientHistoryRequest{
+		Method: method,
+		Path:   path,
+		Body:   body,
+	})
+
+	returnValue := m.ResponseHistory[0]
+	m.ResponseHistory = m.ResponseHistory[1:]
+
+	return returnValue.Response, returnValue.Error
+}
+
+func (m *MockClient) Get(path string) (Response, error) {
+	return m.makeCall(http.MethodGet, path, []byte(""))
+}
+
+func (m *MockClient) Post(path string, body []byte) (Response, error) {
+	return m.makeCall(http.MethodPost, path, body)
+}
+
+func (m *MockClient) Put(path string, body []byte) (Response, error) {
+	return m.makeCall(http.MethodPut, path, body)
+}
+
+func (m *MockClient) Delete(path string) (Response, error) {
+	return m.makeCall(http.MethodDelete, path, []byte(""))
+}
+
+func (m *MockClient) Patch(path string, body []byte) (Response, error) {
+	return m.makeCall(http.MethodPatch, path, body)
+}
