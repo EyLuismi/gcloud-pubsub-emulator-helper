@@ -18,7 +18,7 @@ type Topic struct {
 
 // CreateTopic creates a topic if it does not exist.
 func CreateTopic(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, topicResourceName string,
 	labels *Labels,
 ) error {
@@ -61,7 +61,7 @@ func CreateTopic(
 
 // IsTopicPresent checks if a topic exists.
 func IsTopicPresent(
-	client utils.Client,
+	client utils.ClientInterface,
 	topicResourceName string,
 ) (bool, error) {
 	response, err := client.Get(topicResourceName)
@@ -81,7 +81,7 @@ func IsTopicPresent(
 
 // ListTopics lists all topics of a project.
 func ListTopics(
-	client utils.Client,
+	client utils.ClientInterface,
 	project string,
 ) ([]Topic, error) {
 	// Build the URL for listing topics.
@@ -112,7 +112,7 @@ type listTopicsResponse struct {
 
 // DeleteTopic deletes a topic.
 func DeleteTopic(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, topicResourceName string,
 ) error {
 	response, err := client.Delete(topicResourceName)

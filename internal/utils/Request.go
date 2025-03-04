@@ -9,6 +9,14 @@ import (
 	"strconv"
 )
 
+type ClientInterface interface {
+	Get(path string) (Response, error)
+	Post(path string, body []byte) (Response, error)
+	Put(path string, body []byte) (Response, error)
+	Delete(path string) (Response, error)
+	Patch(path string, body []byte) (Response, error)
+}
+
 type Client struct {
 	host    string
 	client  http.Client

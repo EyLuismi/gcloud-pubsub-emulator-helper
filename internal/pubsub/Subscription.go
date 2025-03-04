@@ -17,7 +17,7 @@ type Subscription struct {
 
 // GetSubscription retrieves a subscription by its resource name.
 func GetSubscription(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, subscriptionResourceName string,
 ) (*Subscription, error) {
 	response, err := client.Get(subscriptionResourceName)
@@ -46,7 +46,7 @@ type listSubscriptionsResponse struct {
 
 // ListSubscriptions retrieves all subscriptions for a given project.
 func ListSubscriptions(
-	client utils.Client,
+	client utils.ClientInterface,
 	project string,
 ) ([]Subscription, error) {
 	// Build the URL for listing subscriptions.
@@ -70,7 +70,7 @@ func ListSubscriptions(
 
 // IsSubscriptionPresent checks if a subscription exists.
 func IsSubscriptionPresent(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, subscriptionResourceName string,
 ) (bool, error) {
 
@@ -91,7 +91,7 @@ func IsSubscriptionPresent(
 
 // CreateSubscription creates a subscription for a topic if it does not exist.
 func CreateSubscription(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, subscriptionResourceName, topicResourceName string,
 	labels *Labels,
 ) error {
@@ -133,7 +133,7 @@ func CreateSubscription(
 
 // DeleteSubscription deletes a subscription.
 func DeleteSubscription(
-	client utils.Client,
+	client utils.ClientInterface,
 	project, subscriptionResourceName string,
 ) error {
 	// Build the full resource name.
