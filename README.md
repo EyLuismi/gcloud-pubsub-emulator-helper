@@ -133,6 +133,23 @@ The `projects` array defines the Pub/Sub projects.
   - Deletes existing topics and subscriptions before applying the new configuration.
   - Creates new topics and subscriptions based on the configuration.
 
+## Working with this repository
+We use `pre-commit` in order to have all the files checked out and testing
+passed before commiting.
+
+To use it, after clonning the repo and [installing pre-commit](https://pre-commit.com/#install), you need to execute:
+```bash
+pre-commit install
+```
+
+By default it will always run the commands in the files you are commiting, but
+you could execute it in every file with the following command:
+```bash
+pre-commit run --all-files
+```
+
+For more information: [pre-commit](https://pre-commit.com/)
+
 ## Legal Information
 
 This project is not affiliated with, endorsed by, or officially connected to Google or Google Cloud Platform.
