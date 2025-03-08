@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateTopic(t *testing.T) {
+func Test_Topics_Create(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusNotFound}, Error: nil},
@@ -25,7 +25,7 @@ func TestCreateTopic(t *testing.T) {
 	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[1].Path)
 }
 
-func TestIsTopicPresent(t *testing.T) {
+func Test_Topics_IsPresent(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},
@@ -40,7 +40,7 @@ func TestIsTopicPresent(t *testing.T) {
 	assert.Equal(t, "projects/test-project/topics/test-topic", mockClient.RequestHistory[0].Path)
 }
 
-func TestListTopics(t *testing.T) {
+func Test_Topics_List(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK, Body: []byte(`{"topics":[{"name":"test-topic"}]}`)}, Error: nil},
@@ -56,7 +56,7 @@ func TestListTopics(t *testing.T) {
 	assert.Equal(t, "projects/test-project/topics", mockClient.RequestHistory[0].Path)
 }
 
-func TestDeleteTopic(t *testing.T) {
+func Test_Topics_Delete(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},

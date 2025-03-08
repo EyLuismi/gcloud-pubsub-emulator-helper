@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLoadConfigurationFromFileWithoutProjects(t *testing.T) {
+func Test_Configuration_LoadFile_WithoutProjects(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -32,7 +32,7 @@ func TestLoadConfigurationFromFileWithoutProjects(t *testing.T) {
 	assert.Equal(t, 0, len(config.Projects))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithoutTopics(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithoutTopics(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -58,7 +58,7 @@ func TestLoadConfigurationFromFileWithProjectWithoutTopics(t *testing.T) {
 	assert.Equal(t, 0, len(config.Projects[0].Topics))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithTopicWithoutSubscriptions(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithTopicWithoutSubscriptions(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -90,7 +90,7 @@ func TestLoadConfigurationFromFileWithProjectWithTopicWithoutSubscriptions(t *te
 	assert.Equal(t, 0, len(config.Projects[0].Topics[0].Subscriptions))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithTopicWithSubscription(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithTopicWithSubscription(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -127,7 +127,7 @@ func TestLoadConfigurationFromFileWithProjectWithTopicWithSubscription(t *testin
 	assert.Equal(t, 1, len(config.Projects[0].Topics[0].Subscriptions))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithTopicWithEmptyLabelsAndWithSubscription(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithTopicWithEmptyLabelsAndWithSubscription(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -166,7 +166,7 @@ func TestLoadConfigurationFromFileWithProjectWithTopicWithEmptyLabelsAndWithSubs
 	assert.Equal(t, 0, len(config.Projects[0].Topics[0].Labels))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithTopicWithALabelAndWithSubscription(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithTopicWithALabelAndWithSubscription(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -207,7 +207,7 @@ func TestLoadConfigurationFromFileWithProjectWithTopicWithALabelAndWithSubscript
 	assert.Equal(t, 1, len(config.Projects[0].Topics[0].Labels))
 }
 
-func TestLoadConfigurationFromFileWithProjectWithTopicWithTwoLabelsTheSameAndWithSubscription(t *testing.T) {
+func Test_Configuration_LoadFile_WithProjectWithTopicWithTwoLabelsTheSameAndWithSubscription(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(
 		`{
@@ -250,14 +250,14 @@ func TestLoadConfigurationFromFileWithProjectWithTopicWithTwoLabelsTheSameAndWit
 	assert.Equal(t, "labelValue2", config.Projects[0].Topics[0].Labels["firstLabel"])
 }
 
-func TestReplaceHost(t *testing.T) {
+func Test_Configuration_ReplaceHost(t *testing.T) {
 	config := Configuration{Host: "localhost:8085"}
 	newHost := "0.0.0.0:8085"
 	config = config.ReplaceHost(newHost)
 	assert.Equal(t, newHost, config.Host)
 }
 
-func TestSync(t *testing.T) {
+func Test_Configuration_Sync(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateSubscription(t *testing.T) {
+func Test_Subscriptions_Create(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusNotFound}, Error: nil},
@@ -25,7 +25,7 @@ func TestCreateSubscription(t *testing.T) {
 	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[1].Path)
 }
 
-func TestIsSubscriptionPresent(t *testing.T) {
+func Test_Subscriptions_IsPresent(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},
@@ -40,7 +40,7 @@ func TestIsSubscriptionPresent(t *testing.T) {
 	assert.Equal(t, "projects/test-project/subscriptions/test-subscription", mockClient.RequestHistory[0].Path)
 }
 
-func TestListSubscriptions(t *testing.T) {
+func Test_Subscriptions_List(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK, Body: []byte(`{"subscriptions":[{"name":"test-subscription"}]}`)}, Error: nil},
@@ -56,7 +56,7 @@ func TestListSubscriptions(t *testing.T) {
 	assert.Equal(t, "projects/test-project/subscriptions", mockClient.RequestHistory[0].Path)
 }
 
-func TestDeleteSubscription(t *testing.T) {
+func Test_Subscriptions_Delete(t *testing.T) {
 	mockClient := &utils.MockClient{
 		ResponseHistory: []utils.MockClientHistoryResponse{
 			{Response: utils.Response{StatusCode: http.StatusOK}, Error: nil},
