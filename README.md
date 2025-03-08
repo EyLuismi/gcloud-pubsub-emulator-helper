@@ -21,9 +21,9 @@ In the future, I plan to add a Web User Interface to visualize basic data from t
 - [X] Support for Labels in Topics
 - [X] Support for Labels in Subscriptions
 - [X] Support for Message Storage Policy
-- [ ] Support for KMS Key Name
+- [X] Support for KMS Key Name
 - [ ] Support for Schemas
-- [ ] Support for State
+- [X] Support for State Response (Emulator returns a dumb empty value)
 - [ ] Additional Web GUI build entry
 
 🔗 [GCloud Pub/Sub REST API Documentation](https://cloud.google.com/pubsub/docs/reference/rest)
@@ -110,10 +110,11 @@ The `projects` array defines the Pub/Sub projects.
 - **`name`** *(string)* - Name of the project.
 - **`topics`** *(array)* - List of topics within the project.
   - **`name`** *(string)* - Name of the topic.
-  - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the topic
-  - **`messageStoragePolicy`** *(MessageStoragePolicy)* - OPTIONAL Policy that should be applied for message storage
+  - **`labels`** *(map[string]string)* - OPTIONAL. Labels added to the topic
+  - **`messageStoragePolicy`** *(MessageStoragePolicy)* - OPTIONAL. Policy that should be applied for message storage
     - **`allowedPersistenceRegions`** *([]string)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations)
     - **`enforceInTransit`** *(bool)* - If true, allowedPersistenceRegions is also used to enforce in-transit guarantees for messages
+  - **`kmsKeyName`** *(string)* - OPTIONAL. The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic.
   - **`subscriptions`** *(array)* - List of subscriptions for the topic.
     - **`name`** *(string)* - Name of the subscription.
     - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the subscription.
