@@ -21,6 +21,13 @@ type Topic struct {
 	Subscriptions        []Subscription            `json:"subscriptions"`
 	Labels               Labels                    `json:"labels"`
 	MessageStoragePolicy TopicMessageStoragePolicy `json:"messageStoragePolicy"`
+
+	// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#state
+	/**
+	  Output only. An output-only field indicating the state of the topic.
+	  => The emulator seems to print an empty value
+	*/
+	State string `json:"state"`
 }
 
 // String returns a JSON string representation of the Topic.
