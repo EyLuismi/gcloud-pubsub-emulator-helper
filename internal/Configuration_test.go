@@ -2,7 +2,6 @@ package internal
 
 import (
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal/pubsub"
@@ -11,21 +10,19 @@ import (
 )
 
 func TestLoadConfigurationFromFile(t *testing.T) {
-	// TODO: Make it possible to do it in memory through a Filesystem interface
-	fileContent := `{
-		"host": "localhost:8888",
-		"startTimeoutMs": 30000,
-		"avoidStartupCheck": false,
-		"projects": [],
-		"timeBetweenStartupChecksMs": 200,
-		"delayBeforeStartupCheckMs": 0
-	}`
 	filepath := "test_config.json"
-	err := os.WriteFile(filepath, []byte(fileContent), 0644)
-	assert.NoError(t, err)
-	defer os.Remove(filepath)
+	mockReader := utils.NewFileReaderMockBasic(
+		`{
+      "host": "localhost:8888",
+      "startTimeoutMs": 30000,
+      "avoidStartupCheck": false,
+      "projects": [],
+      "timeBetweenStartupChecksMs": 200,
+      "delayBeforeStartupCheckMs": 0
+    }`,
+	)
 
-	config, err := LoadConfigurationFromFile(&utils.FileReader{}, filepath)
+	config, err := LoadConfigurationFromFile(mockReader, filepath)
 	assert.NoError(t, err)
 	assert.Equal(t, "localhost:8888", config.Host)
 	assert.Equal(t, 30000, config.StartTimeoutMs)

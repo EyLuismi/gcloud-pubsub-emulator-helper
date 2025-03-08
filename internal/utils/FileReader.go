@@ -28,3 +28,11 @@ func (m *FileReaderMock) Read(filePath string) ([]byte, error) {
 	}
 	return nil, nil
 }
+
+func NewFileReaderMockBasic(fileContent string) *FileReaderMock {
+	return &FileReaderMock{
+		ReadFunc: func(filepath string) ([]byte, error) {
+			return []byte(fileContent), nil
+		},
+	}
+}
