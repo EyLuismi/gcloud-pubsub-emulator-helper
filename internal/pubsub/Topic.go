@@ -9,11 +9,27 @@ import (
 	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal/utils"
 )
 
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#MessageStoragePolicy
+type TopicMessageStoragePolicy struct {
+	AllowedPersistenceRegions []string `json:"allowedPersistenceRegions"`
+	EnforceInTransit          bool     `json:"enforceInTransit"`
+}
+
 // Topic represents a Pub/Sub topic.
 type Topic struct {
-	Name          string         `json:"name"`
-	Subscriptions []Subscription `json:"subscriptions"`
-	Labels        Labels         `json:"labels"`
+	Name                 string                    `json:"name"`
+	Subscriptions        []Subscription            `json:"subscriptions"`
+	Labels               Labels                    `json:"labels"`
+	MessageStoragePolicy TopicMessageStoragePolicy `json:"messageStoragePolicy"`
+}
+
+// String returns a JSON string representation of the Topic.
+func (t *Topic) String() string {
+	b, err := json.MarshalIndent(t, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("error marshaling topic: %v", err)
+	}
+	return string(b)
 }
 
 // CreateTopic creates a topic if it does not exist.
@@ -21,6 +37,7 @@ func CreateTopic(
 	client utils.ClientInterface,
 	project, topicResourceName string,
 	labels *Labels,
+	messageStoragePolicy *TopicMessageStoragePolicy,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -32,13 +49,18 @@ func CreateTopic(
 	}
 
 	type CreateTopicBody struct {
-		Labels Labels `json:"labels"`
+		Labels               Labels                    `json:"labels"`
+		MessageStoragePolicy TopicMessageStoragePolicy `json:"messageStoragePolicy"`
 	}
 
 	createTopicBody := CreateTopicBody{}
 
 	if labels != nil {
 		createTopicBody.Labels = *labels
+	}
+
+	if messageStoragePolicy != nil {
+		createTopicBody.MessageStoragePolicy = *messageStoragePolicy
 	}
 
 	jsonCreateTopicBody, err := json.Marshal(createTopicBody)

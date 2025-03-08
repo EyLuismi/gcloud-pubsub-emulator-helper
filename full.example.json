@@ -13,6 +13,13 @@
             "isAdvanced": "true",
             "owner": "admin"
           },
+          "messageStoragePolicy": {
+            "allowedPersistenceRegions": [
+              "europe-west2",
+              "europe-west1"
+            ],
+            "enforceInTransit": true
+          },
           "subscriptions": [
             {
               "name": "advanced.configuration.example.subscription1",

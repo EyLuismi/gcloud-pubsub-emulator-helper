@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal"
+	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal/pubsub"
 	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal/utils"
 	"github.com/EyLuismi/gcloud-pubsub-emulator-helper/internal/utils/Llog"
 )
@@ -56,4 +57,14 @@ func main() {
 
 	client := utils.NewClient(configuration.Host, "v1")
 	configuration.Sync(client)
+
+	topicsList, err := pubsub.ListTopics(client, configuration.Projects[0].Name)
+	if err != nil {
+		fmt.Println("There was some error while trying to list the topics")
+		os.Exit(1)
+	}
+
+	for _, topic := range topicsList {
+		Llog.Debug(topic.String())
+	}
 }
