@@ -25,7 +25,7 @@ func TestLoadConfigurationFromFile(t *testing.T) {
 	assert.NoError(t, err)
 	defer os.Remove(filepath)
 
-	config, err := LoadConfigurationFromFile(filepath)
+	config, err := LoadConfigurationFromFile(&utils.FileReader{}, filepath)
 	assert.NoError(t, err)
 	assert.Equal(t, "localhost:8888", config.Host)
 	assert.Equal(t, 30000, config.StartTimeoutMs)

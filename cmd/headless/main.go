@@ -36,7 +36,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	configuration, err := internal.LoadConfigurationFromFile(*configFile)
+	configuration, err := internal.LoadConfigurationFromFile(&utils.FileReader{}, *configFile)
 	if err != nil {
 		fmt.Println("There was an error when trying to load the configuration file:")
 		fmt.Println(err)

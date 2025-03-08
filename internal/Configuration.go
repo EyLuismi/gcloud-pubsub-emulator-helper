@@ -29,9 +29,9 @@ func (c Configuration) String() string {
 	return string(raw)
 }
 
-func LoadConfigurationFromFile(filepath string) (Configuration, error) {
+func LoadConfigurationFromFile(fileReader utils.FileReaderInterface, filepath string) (Configuration, error) {
 	// TODO: Create an intermediate configuration schema to decouple Configuration struct <=> file format
-	configurationFileBytes, err := os.ReadFile(filepath)
+	configurationFileBytes, err := fileReader.Read(filepath)
 	if err != nil {
 		return Configuration{}, err
 	}
