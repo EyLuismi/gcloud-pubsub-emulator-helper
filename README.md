@@ -113,8 +113,9 @@ The `projects` array defines the Pub/Sub projects.
   - **`labels`** *(map[string]string)* - OPTIONAL. Labels added to the topic
   - **`messageStoragePolicy`** *(MessageStoragePolicy)* - OPTIONAL. Policy that should be applied for message storage
     - **`allowedPersistenceRegions`** *([]string)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations)
-    - **`enforceInTransit`** *(bool)* - If true, allowedPersistenceRegions is also used to enforce in-transit guarantees for messages
+    - **`enforceInTransit`** *(bool)* - If true, allowedPersistenceRegions is also used to enforce in-transit guarantees for messag
   - **`kmsKeyName`** *(string)* - OPTIONAL. The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic.
+  - **`messageRetentionDuration`** *(string)* - OPTIONAL. AVOID. This field does not seem to be accepted by the emulator but it exists in the REST API.
   - **`subscriptions`** *(array)* - List of subscriptions for the topic.
     - **`name`** *(string)* - Name of the subscription.
     - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the subscription.

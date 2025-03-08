@@ -139,6 +139,7 @@ func (c *Configuration) Sync(client utils.ClientInterface) {
 				&topic.Labels,
 				&topic.MessageStoragePolicy,
 				topic.KmsKeyName,
+				topic.MessageRetentionDuration,
 			)
 			for _, subscription := range topic.Subscriptions {
 				pubsub.CreateSubscription(

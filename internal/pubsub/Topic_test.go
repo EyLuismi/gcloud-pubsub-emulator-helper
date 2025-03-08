@@ -16,7 +16,7 @@ func Test_Topics_Create(t *testing.T) {
 		},
 	}
 
-	err := CreateTopic(mockClient, "test-project", "projects/test-project/topics/test-topic", nil, nil, "")
+	err := CreateTopic(mockClient, "test-project", "projects/test-project/topics/test-topic", nil, nil, "", "")
 	assert.NoError(t, err)
 	assert.Equal(t, 2, len(mockClient.RequestHistory))
 	assert.Equal(t, http.MethodGet, mockClient.RequestHistory[0].Method)

@@ -30,6 +30,12 @@ type Topic struct {
 	State string `json:"state"`
 
 	KmsKeyName string `json:"kmsKeyName"`
+
+	/**
+	  This field is not accepted by the emulator, but have been added as the
+	    official REST API accepts it. You shouldn't send it in the mean time.
+	*/
+	MessageRetentionDuration string `json:"messageRetentionDuration"`
 }
 
 // String returns a JSON string representation of the Topic.
@@ -48,6 +54,7 @@ func CreateTopic(
 	labels *Labels,
 	messageStoragePolicy *TopicMessageStoragePolicy,
 	kmsKeyName string,
+	messageRetentionDuration string,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -59,9 +66,10 @@ func CreateTopic(
 	}
 
 	type CreateTopicBody struct {
-		Labels               Labels                    `json:"labels"`
-		MessageStoragePolicy TopicMessageStoragePolicy `json:"messageStoragePolicy"`
-		KmsKeyName           string                    `json:"kmsKeyName"`
+		Labels                   Labels                    `json:"labels"`
+		MessageStoragePolicy     TopicMessageStoragePolicy `json:"messageStoragePolicy"`
+		KmsKeyName               string                    `json:"kmsKeyName"`
+		MessageRetentionDuration *string                   `json:"messageRetentionDuration"`
 	}
 
 	createTopicBody := CreateTopicBody{}
@@ -76,6 +84,12 @@ func CreateTopic(
 
 	if kmsKeyName != "" {
 		createTopicBody.KmsKeyName = kmsKeyName
+	}
+
+	if messageRetentionDuration != "" {
+		createTopicBody.MessageRetentionDuration = &messageRetentionDuration
+	} else {
+		createTopicBody.MessageRetentionDuration = nil
 	}
 
 	jsonCreateTopicBody, err := json.Marshal(createTopicBody)
