@@ -15,6 +15,64 @@ type TopicMessageStoragePolicy struct {
 	EnforceInTransit          bool     `json:"enforceInTransit"`
 }
 
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#TopicIngestionDataSourceSettings
+type TopicIngestionDataSourceSettings struct {
+	PlatformLogsSettings TopicIngestionDataSourceSettingsPlatformLogsSettings `json:"platformLogsSettings"`
+	AwsKinesis           *TopicIngestionDataSourceSettingsAwsKinesis          `json:"awsKinesis,omitempty"`
+	CloudStorage         *TopicIngestionDataSourceSettingsCloudStorage        `json:"cloudStorage,omitempty"`
+}
+
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#CloudStorage
+type TopicIngestionDataSourceSettingsCloudStorage struct {
+	State                   CloudStorageState       `json:"state"`
+	Bucket                  string                  `json:"bucket"`
+	MinimumObjectCreateTime string                  `json:"minimumObjectCreateTime"`
+	MatchGlob               string                  `json:"matchGlob"`
+	TextFormat              *CloudStorageTextFormat `json:"textFormat,omitempty"`
+	AvroFormat              *struct{}               `json:"avroFormat,omitempty"`
+	PubSubAvroFormat        *struct{}               `json:"pubsubAvroFormat,omitempty"`
+}
+
+type CloudStorageState string
+
+const (
+	CLOUD_STORAGE_STATE_UNSPECIFIED               CloudStorageState = "STATE_UNSPECIFIED"
+	CLOUD_STORAGE_ACTIVE                          CloudStorageState = "ACTIVE"
+	CLOUD_STORAGE_CLOUD_STORAGE_PERMISSION_DENIED CloudStorageState = "CLOUD_STORAGE_PERMISSION_DENIED"
+	CLOUD_STORAGE_PUBLISH_PERMISSION_DENIED       CloudStorageState = "PUBLISH_PERMISSION_DENIED"
+	CLOUD_STORAGE_BUCKET_NOT_FOUND                CloudStorageState = "BUCKET_NOT_FOUND"
+	CLOUD_STORAGE_TOO_MANY_OBJECTS                CloudStorageState = "TOO_MANY_OBJECTS"
+)
+
+type CloudStorageTextFormat struct {
+	Delimiter string `json:"delimiter"`
+}
+
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#PlatformLogsSettings
+type TopicIngestionDataSourceSettingsPlatformLogsSettings struct {
+	Severity string `json:"severity"`
+}
+
+type AwsKinesisState string
+
+const (
+	AWS_KINESIS_STATE_UNSPECIFIED         AwsKinesisState = "STATE_UNSPECIFIED"
+	AWS_KINESIS_ACTIVE                    AwsKinesisState = "ACTIVE"
+	AWS_KINESIS_KINESIS_PERMISSION_DENIED AwsKinesisState = "KINESIS_PERMISSION_DENIED"
+	AWS_KINESIS_PUBLISH_PERMISSION_DENIED AwsKinesisState = "PUBLISH_PERMISSION_DENIED"
+	AWS_KINESIS_STREAM_NOT_FOUND          AwsKinesisState = "STREAM_NOT_FOUND"
+	AWS_KINESIS_CONSUMER_NOT_FOUND        AwsKinesisState = "CONSUMER_NOT_FOUND"
+)
+
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#AwsKinesis
+type TopicIngestionDataSourceSettingsAwsKinesis struct {
+	State             AwsKinesisState `json:"state"`
+	StreamArn         string          `json:"streamArn"`
+	ConsumerArn       string          `json:"consumerArn"`
+	AwsRoleArn        string          `json:"awsRoleArn"`
+	GcpServiceAccount string          `json:"gcpServiceAccount"`
+}
+
 // Topic represents a Pub/Sub topic.
 type Topic struct {
 	Name                 string                    `json:"name"`
@@ -36,6 +94,8 @@ type Topic struct {
 	    official REST API accepts it. You shouldn't send it in the mean time.
 	*/
 	MessageRetentionDuration string `json:"messageRetentionDuration"`
+
+	IngestionDataSourceSettings *TopicIngestionDataSourceSettings `json:"ingestionDataSourceSettings,omitempty"`
 }
 
 // String returns a JSON string representation of the Topic.
@@ -55,6 +115,7 @@ func CreateTopic(
 	messageStoragePolicy *TopicMessageStoragePolicy,
 	kmsKeyName string,
 	messageRetentionDuration string,
+	ingestionDataSourceSettings *TopicIngestionDataSourceSettings,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -66,10 +127,11 @@ func CreateTopic(
 	}
 
 	type CreateTopicBody struct {
-		Labels                   Labels                    `json:"labels"`
-		MessageStoragePolicy     TopicMessageStoragePolicy `json:"messageStoragePolicy"`
-		KmsKeyName               string                    `json:"kmsKeyName"`
-		MessageRetentionDuration *string                   `json:"messageRetentionDuration"`
+		Labels                      Labels                            `json:"labels"`
+		MessageStoragePolicy        TopicMessageStoragePolicy         `json:"messageStoragePolicy"`
+		KmsKeyName                  string                            `json:"kmsKeyName"`
+		MessageRetentionDuration    *string                           `json:"messageRetentionDuration"`
+		IngestionDataSourceSettings *TopicIngestionDataSourceSettings `json:"ingestionDataSourceSettings"`
 	}
 
 	createTopicBody := CreateTopicBody{}
@@ -90,6 +152,10 @@ func CreateTopic(
 		createTopicBody.MessageRetentionDuration = &messageRetentionDuration
 	} else {
 		createTopicBody.MessageRetentionDuration = nil
+	}
+
+	if ingestionDataSourceSettings != nil {
+		createTopicBody.IngestionDataSourceSettings = ingestionDataSourceSettings
 	}
 
 	jsonCreateTopicBody, err := json.Marshal(createTopicBody)

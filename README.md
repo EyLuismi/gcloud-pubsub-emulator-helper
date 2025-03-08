@@ -110,15 +110,33 @@ The `projects` array defines the Pub/Sub projects.
 - **`name`** *(string)* - Name of the project.
 - **`topics`** *(array)* - List of topics within the project.
   - **`name`** *(string)* - Name of the topic.
-  - **`labels`** *(map[string]string)* - OPTIONAL. Labels added to the topic
-  - **`messageStoragePolicy`** *(MessageStoragePolicy)* - OPTIONAL. Policy that should be applied for message storage
-    - **`allowedPersistenceRegions`** *([]string)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations)
-    - **`enforceInTransit`** *(bool)* - If true, allowedPersistenceRegions is also used to enforce in-transit guarantees for messag
-  - **`kmsKeyName`** *(string)* - OPTIONAL. The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic.
-  - **`messageRetentionDuration`** *(string)* - OPTIONAL. AVOID. This field does not seem to be accepted by the emulator but it exists in the REST API.
-  - **`subscriptions`** *(array)* - List of subscriptions for the topic.
+  - **`labels`** *(map[string]string, optional)* - Labels added to the topic.
+  - **`messageStoragePolicy`** *(MessageStoragePolicy, optional)* - Policy that should be applied for message storage.
+    - **`allowedPersistenceRegions`** *([]string, optional)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations).
+    - **`enforceInTransit`** *(bool, optional)* - If `true`, `allowedPersistenceRegions` is also used to enforce in-transit guarantees for messages.
+  - **`kmsKeyName`** *(string, optional)* - The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic.
+  - **`messageRetentionDuration`** *(string, optional)* - AVOID. This field does not seem to be accepted by the emulator but it exists in the REST API.
+  - **`subscriptions`** *(array, optional)* - List of subscriptions for the topic.
     - **`name`** *(string)* - Name of the subscription.
-    - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the subscription.
+    - **`labels`** *(map[string]string, optional)* - Labels added to the subscription.
+  - **`ingestionDataSourceSettings`** *(IngestionDataSourceSettings, optional)* - Configuration for external ingestion sources.
+    - **`platformLogsSettings`** *(PlatformLogsSettings, optional)* - Configuration for platform log ingestion.
+      - **`severity`** *(string)* - The severity level of logs to ingest (e.g., `INFO`, `WARNING`, `ERROR`).
+    - **`awsKinesis`** *(AwsKinesisSettings, optional)* - Configuration for AWS Kinesis ingestion.
+      - **`state`** *(string)* - The state of the AWS Kinesis ingestion (e.g., `ACTIVE`, `KINESIS_PERMISSION_DENIED`).
+      - **`streamArn`** *(string)* - The ARN of the AWS Kinesis stream.
+      - **`consumerArn`** *(string)* - The ARN of the AWS Kinesis consumer.
+      - **`awsRoleArn`** *(string)* - The ARN of the AWS IAM role used for access.
+      - **`gcpServiceAccount`** *(string)* - The Google Cloud service account associated with ingestion.
+    - **`cloudStorage`** *(CloudStorageSettings, optional)* - Configuration for Cloud Storage ingestion.
+      - **`state`** *(string)* - The state of the Cloud Storage ingestion (e.g., `ACTIVE`, `BUCKET_NOT_FOUND`).
+      - **`bucket`** *(string)* - The Cloud Storage bucket used for ingestion.
+      - **`minimumObjectCreateTime`** *(string)* - The minimum object creation time to consider.
+      - **`matchGlob`** *(string, optional)* - A glob pattern to match object names.
+      - **`textFormat`** *(TextFormatSettings, optional)* - Configuration for text format ingestion.
+        - **`delimiter`** *(string)* - The delimiter used in text format files.
+      - **`avroFormat`** *(object, optional)* - If present, indicates Avro binary format ingestion.
+      - **`pubsubAvroFormat`** *(object, optional)* - If present, indicates ingestion of Pub/Sub exported Avro messages.
 
 ## Internal Functionality
 

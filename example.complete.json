@@ -30,7 +30,21 @@
                 "programmingLanguage": "GoLang"
               }
             }
-          ]
+          ],
+          "ingestionDataSourceSettings": {
+            "platformLogsSettings": {
+              "severity": "ERROR"
+            },
+            "cloudStorage": {
+              "state": "ACTIVE",
+              "bucket": "example-cloud-storage-bucket",
+              "minimumObjectCreateTime": "2023-01-01T00:00:00Z",
+              "matchGlob": "*.json",
+              "textFormat": {
+                "delimiter": ","
+              }
+            }
+          }
         }
       ]
     }

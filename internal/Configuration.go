@@ -64,6 +64,17 @@ func LoadConfigurationFromFile(fileReader utils.FileReaderInterface, filepath st
 		configuration.TimeBetweenStartupChecksMs = 200
 	}
 
+	for _, project := range configuration.Projects {
+		for _, topic := range project.Topics {
+			if topic.IngestionDataSourceSettings != nil {
+				if topic.IngestionDataSourceSettings.AwsKinesis != nil && topic.IngestionDataSourceSettings.CloudStorage != nil {
+					fmt.Println("You can't add both AwsKinesis and CloudStorage to IngestionDataSourceSettings in a Topic")
+					os.Exit(1)
+				}
+			}
+		}
+	}
+
 	if !utils.IsValidHost(configuration.Host) {
 		fmt.Println("The given host is invalid")
 		os.Exit(1)
@@ -140,6 +151,7 @@ func (c *Configuration) Sync(client utils.ClientInterface) {
 				&topic.MessageStoragePolicy,
 				topic.KmsKeyName,
 				topic.MessageRetentionDuration,
+				topic.IngestionDataSourceSettings,
 			)
 			for _, subscription := range topic.Subscriptions {
 				pubsub.CreateSubscription(
