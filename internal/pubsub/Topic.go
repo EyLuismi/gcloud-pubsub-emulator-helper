@@ -28,6 +28,8 @@ type Topic struct {
 	  => The emulator seems to print an empty value
 	*/
 	State string `json:"state"`
+
+	KmsKeyName string `json:"kmsKeyName"`
 }
 
 // String returns a JSON string representation of the Topic.
@@ -45,6 +47,7 @@ func CreateTopic(
 	project, topicResourceName string,
 	labels *Labels,
 	messageStoragePolicy *TopicMessageStoragePolicy,
+	kmsKeyName string,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -58,6 +61,7 @@ func CreateTopic(
 	type CreateTopicBody struct {
 		Labels               Labels                    `json:"labels"`
 		MessageStoragePolicy TopicMessageStoragePolicy `json:"messageStoragePolicy"`
+		KmsKeyName           string                    `json:"kmsKeyName"`
 	}
 
 	createTopicBody := CreateTopicBody{}
@@ -68,6 +72,10 @@ func CreateTopic(
 
 	if messageStoragePolicy != nil {
 		createTopicBody.MessageStoragePolicy = *messageStoragePolicy
+	}
+
+	if kmsKeyName != "" {
+		createTopicBody.KmsKeyName = kmsKeyName
 	}
 
 	jsonCreateTopicBody, err := json.Marshal(createTopicBody)

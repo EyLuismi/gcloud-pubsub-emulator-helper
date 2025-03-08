@@ -127,6 +127,45 @@ func Test_Configuration_LoadFile_WithProjectWithTopicWithSubscription(t *testing
 	assert.Equal(t, 1, len(config.Projects[0].Topics[0].Subscriptions))
 }
 
+func Test_Configuration_LoadFile_WithProjectWithTopicWithKMSKeyNameWithSubscription(t *testing.T) {
+	filepath := "test_config.json"
+	mockReader := utils.NewFileReaderMockBasic(
+		`{
+      "host": "localhost:8888",
+      "startTimeoutMs": 30000,
+      "avoidStartupCheck": false,
+      "projects": [{
+        "name": "first-project",
+        "topics": [
+          {
+            "name": "testing.new-topic.v1",
+            "kmsKeyName": "projects/advanced-configuration-example/locations/europe-west2/keyRings/advanced-configuration-example/cryptoKeys/advanced-configuration-example-key",
+            "subscriptions": [
+              {
+                "name": "testing.new-topic.v1.subscripion1"
+              }
+            ]
+          }
+        ]
+      }],
+      "timeBetweenStartupChecksMs": 200,
+      "delayBeforeStartupCheckMs": 0
+    }`,
+	)
+
+	config, err := LoadConfigurationFromFile(mockReader, filepath)
+	assert.NoError(t, err)
+	assert.Equal(t, "localhost:8888", config.Host)
+	assert.Equal(t, 30000, config.StartTimeoutMs)
+	assert.False(t, config.AvoidStartupCheck)
+	assert.Equal(t, 200, config.TimeBetweenStartupChecksMs)
+	assert.Equal(t, 0, config.DelayBeforeStartupCheckMs)
+	assert.Equal(t, 1, len(config.Projects))
+	assert.Equal(t, 1, len(config.Projects[0].Topics))
+	assert.Equal(t, 1, len(config.Projects[0].Topics[0].Subscriptions))
+	assert.Equal(t, "projects/advanced-configuration-example/locations/europe-west2/keyRings/advanced-configuration-example/cryptoKeys/advanced-configuration-example-key", config.Projects[0].Topics[0].KmsKeyName)
+}
+
 func Test_Configuration_LoadFile_WithProjectWithTopicWithEmptyLabelsAndWithSubscription(t *testing.T) {
 	filepath := "test_config.json"
 	mockReader := utils.NewFileReaderMockBasic(

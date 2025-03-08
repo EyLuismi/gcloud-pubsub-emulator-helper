@@ -20,6 +20,7 @@
             ],
             "enforceInTransit": true
           },
+          "kmsKeyName": "projects/advanced-configuration-example/locations/europe-west2/keyRings/advanced-configuration-example/cryptoKeys/advanced-configuration-example-key",
           "subscriptions": [
             {
               "name": "advanced.configuration.example.subscription1",
