@@ -32,7 +32,7 @@ clean:
 
 # Run target
 run: build
-	./$(BINARY_PATH) -config ./full.example.json
+	./$(BINARY_PATH) -config ./example.complete.json
 
 # Dependency management
 deps:
