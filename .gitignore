@@ -6,7 +6,7 @@ build/
 *.yml
 *.yaml
 *.json
-!*.example.json
+!example.*.json
 !.pre-commit-config.yaml
 
 !compose*.yml
