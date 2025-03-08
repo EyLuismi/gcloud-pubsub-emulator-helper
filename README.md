@@ -20,7 +20,7 @@ In the future, I plan to add a Web User Interface to visualize basic data from t
 - [X] Basic sync between the emulator and the provided configuration
 - [X] Support for Labels in Topics
 - [X] Support for Labels in Subscriptions
-- [ ] Support for Message Storage Policy
+- [X] Support for Message Storage Policy
 - [ ] Support for KMS Key Name
 - [ ] Support for Schemas
 - [ ] Support for State
@@ -111,6 +111,9 @@ The `projects` array defines the Pub/Sub projects.
 - **`topics`** *(array)* - List of topics within the project.
   - **`name`** *(string)* - Name of the topic.
   - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the topic
+  - **`messageStoragePolicy`** *(MessageStoragePolicy)* - OPTIONAL Policy that should be applied for message storage
+    - **`allowedPersistenceRegions`** *([]string)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations)
+    - **`enforceInTransit`** *(bool)* - If true, allowedPersistenceRegions is also used to enforce in-transit guarantees for messages
   - **`subscriptions`** *(array)* - List of subscriptions for the topic.
     - **`name`** *(string)* - Name of the subscription.
     - **`labels`** *(map[string]string)* - OPTIONAL Labels added to the subscription.
