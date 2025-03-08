@@ -15,6 +15,15 @@ type Subscription struct {
 	Labels Labels `json:"labels"`
 }
 
+// String returns a JSON string representation of the Subscription.
+func (t *Subscription) String() string {
+	b, err := json.MarshalIndent(t, "", "  ")
+	if err != nil {
+		return fmt.Sprintf("error marshaling Subscription: %v", err)
+	}
+	return string(b)
+}
+
 // GetSubscription retrieves a subscription by its resource name.
 func GetSubscription(
 	client utils.ClientInterface,

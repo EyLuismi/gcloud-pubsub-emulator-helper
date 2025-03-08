@@ -58,6 +58,10 @@ func main() {
 	client := utils.NewClient(configuration.Host, "v1")
 	configuration.Sync(client)
 
+	/**
+	  For debugging purposes, list topics and subscriptions
+	*/
+
 	topicsList, err := pubsub.ListTopics(client, configuration.Projects[0].Name)
 	if err != nil {
 		fmt.Println("There was some error while trying to list the topics")
@@ -66,5 +70,15 @@ func main() {
 
 	for _, topic := range topicsList {
 		Llog.Debug(topic.String())
+	}
+
+	subscriptionsList, err := pubsub.ListSubscriptions(client, configuration.Projects[0].Name)
+	if err != nil {
+		fmt.Println("There was some error while trying to list the subscriptions")
+		os.Exit(1)
+	}
+
+	for _, subscription := range subscriptionsList {
+		Llog.Debug(subscription.String())
 	}
 }

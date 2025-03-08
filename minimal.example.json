@@ -1,0 +1,17 @@
+{
+  "projects": [
+    {
+      "name": "minimal-configuration-example",
+      "topics": [
+        {
+          "name": "minimal.configuration.example.topic",
+          "subscriptions": [
+            {
+              "name": "minimal.configuration.example.subscription1"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
