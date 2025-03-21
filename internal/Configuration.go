@@ -139,6 +139,17 @@ func (c *Configuration) Sync(client utils.ClientInterface) {
 
 	// Applying information in the configuration
 	for _, project := range c.Projects {
+		for _, schema := range project.Schemas {
+			pubsub.CreateSchema(
+				client,
+				project.Name,
+				schema.Id,
+				schema.Name,
+				schema.Type,
+				schema.Definition,
+			)
+		}
+
 		for _, topic := range project.Topics {
 			pubsub.CreateTopic(
 				client,
@@ -152,6 +163,7 @@ func (c *Configuration) Sync(client utils.ClientInterface) {
 				topic.KmsKeyName,
 				topic.MessageRetentionDuration,
 				topic.IngestionDataSourceSettings,
+				topic.SchemaSettings,
 			)
 			for _, subscription := range topic.Subscriptions {
 				pubsub.CreateSubscription(

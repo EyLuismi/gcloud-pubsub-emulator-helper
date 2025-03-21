@@ -73,6 +73,32 @@ type TopicIngestionDataSourceSettingsAwsKinesis struct {
 	GcpServiceAccount string          `json:"gcpServiceAccount"`
 }
 
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#Encoding
+type SchemaEncoding string
+
+const (
+	SCHEMA_ENCODING_UNSPECIFIED SchemaEncoding = "ENCODING_UNSPECIFIED"
+	SCHEMA_ENCODING_JSON        SchemaEncoding = "JSON"
+	SCHEMA_ENCODING_BINARY      SchemaEncoding = "BINARY"
+)
+
+// https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics#SchemaSettings
+type SchemaSettings struct {
+	/**
+	  Required. The name of the schema that messages published should be validated
+	   against. Format is projects/{project}/schemas/{schema}. The value of this
+	   field will be _deleted-schema_ if the schema has been deleted.
+	*/
+	Schema   string         `json:"schema"`
+	Encoding SchemaEncoding `json:"encoding"`
+
+	/**
+	  These will convert the SchemaId to RevisionId
+	*/
+	FirstSchemaId string `json:"firstSchemaId,omitempty"`
+	LastSchemaId  string `json:"lastSchemaId,omitempty"`
+}
+
 // Topic represents a Pub/Sub topic.
 type Topic struct {
 	Name                 string                    `json:"name"`
@@ -96,6 +122,8 @@ type Topic struct {
 	MessageRetentionDuration string `json:"messageRetentionDuration"`
 
 	IngestionDataSourceSettings *TopicIngestionDataSourceSettings `json:"ingestionDataSourceSettings,omitempty"`
+
+	SchemaSettings *SchemaSettings `json:"schemaSettings,omitempty"`
 }
 
 // String returns a JSON string representation of the Topic.
@@ -116,6 +144,7 @@ func CreateTopic(
 	kmsKeyName string,
 	messageRetentionDuration string,
 	ingestionDataSourceSettings *TopicIngestionDataSourceSettings,
+	schemaSettings *SchemaSettings,
 ) error {
 	// Check if the topic already exists.
 	exists, err := IsTopicPresent(client, topicResourceName)
@@ -126,12 +155,47 @@ func CreateTopic(
 		return nil
 	}
 
+	type CreateTopicSchemaSettingsBody struct {
+		Schema          string         `json:"schema"`
+		Encoding        SchemaEncoding `json:"encoding,omitempty"`
+		FirstRevisionId string         `json:"firstRevisionId,omitempty"`
+		LastRevisionId  string         `json:"lastRevisionId,omitempty"`
+	}
+
+	var createTopicSchemaSettingsBody *CreateTopicSchemaSettingsBody
+
+	if schemaSettings != nil {
+		schemaFirstRevisionId, err := GetSchemaRevisionIdBySchemaId(client, project, schemaSettings.FirstSchemaId)
+		if err != nil {
+			return err
+		}
+
+		schemaLastRevisionId, err := GetSchemaRevisionIdBySchemaId(client, project, schemaSettings.LastSchemaId)
+		if err != nil {
+			return err
+		}
+
+		// TODO: RIGHT NOW ITS SEEMS THEY ARE CONFUSING ID WITH NAME
+		createTopicSchemaSettingsBody = &CreateTopicSchemaSettingsBody{
+			Schema:          GetResourceNameForSchema(project, schemaSettings.FirstSchemaId),
+			Encoding:        schemaSettings.Encoding,
+			FirstRevisionId: schemaFirstRevisionId,
+			LastRevisionId:  schemaLastRevisionId,
+		}
+
+		// Pretty print the schema settings for logging
+		if b, err := json.MarshalIndent(createTopicSchemaSettingsBody, "", "  "); err == nil {
+			fmt.Printf("Schema settings: %s\n", string(b))
+		}
+	}
+
 	type CreateTopicBody struct {
 		Labels                      Labels                            `json:"labels"`
 		MessageStoragePolicy        TopicMessageStoragePolicy         `json:"messageStoragePolicy"`
 		KmsKeyName                  string                            `json:"kmsKeyName"`
 		MessageRetentionDuration    *string                           `json:"messageRetentionDuration"`
 		IngestionDataSourceSettings *TopicIngestionDataSourceSettings `json:"ingestionDataSourceSettings"`
+		SchemaSettings              *CreateTopicSchemaSettingsBody    `json:"schemaSettings"`
 	}
 
 	createTopicBody := CreateTopicBody{}
@@ -156,6 +220,10 @@ func CreateTopic(
 
 	if ingestionDataSourceSettings != nil {
 		createTopicBody.IngestionDataSourceSettings = ingestionDataSourceSettings
+	}
+
+	if createTopicSchemaSettingsBody != nil {
+		createTopicBody.SchemaSettings = createTopicSchemaSettingsBody
 	}
 
 	jsonCreateTopicBody, err := json.Marshal(createTopicBody)

@@ -6,6 +6,20 @@
   "projects": [
     {
       "name": "advanced-configuration-example",
+      "schemas": [
+        {
+          "id": "basicAvroSchemaV1",
+          "name": "advanced.configuration.example.schema",
+          "type": "AVRO",
+          "definition": "{\"type\":\"record\",\"name\":\"Avro\",\"fields\":[{\"name\":\"ProductName\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"SKU\",\"type\":\"int\",\"default\":0},{\"name\":\"InStock\",\"type\":\"boolean\",\"default\":false}]}"
+        },
+        {
+          "id": "basicAvroSchemaV2",
+          "name": "advanced.configuration.example.schema",
+          "type": "AVRO",
+          "definition": "{\"type\":\"record\",\"name\":\"Avro\",\"fields\":[{\"name\":\"ProductTitle\",\"type\":\"string\",\"default\":\"\"},{\"name\":\"SKU\",\"type\":\"int\",\"default\":0},{\"name\":\"InStock\",\"type\":\"boolean\",\"default\":false}]}"
+        }
+      ],
       "topics": [
         {
           "name": "advanced.configuration.example.topic",
@@ -21,6 +35,12 @@
             "enforceInTransit": true
           },
           "kmsKeyName": "projects/advanced-configuration-example/locations/europe-west2/keyRings/advanced-configuration-example/cryptoKeys/advanced-configuration-example-key",
+          "schemaSettings": {
+            "schema": "advanced.configuration.example.schema",
+            "encoding": "BINARY",
+            "firstSchemaId": "basicAvroSchemaV1",
+            "lastSchemaId": "basicAvroSchemaV1"
+          },
           "subscriptions": [
             {
               "name": "advanced.configuration.example.subscription1",

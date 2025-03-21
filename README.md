@@ -22,9 +22,12 @@ In the future, I plan to add a Web User Interface to visualize basic data from t
 - [X] Support for Labels in Subscriptions
 - [X] Support for Message Storage Policy
 - [X] Support for KMS Key Name
-- [ ] Support for Schemas
+- [X] Support for Schema Settings in Topic
+- [X] Support for Schemas
 - [X] Support for State Response (Emulator returns a dumb empty value)
 - [ ] Additional Web GUI build entry
+- [ ] Be able to add messages to a topic from configuration
+- [ ] Be able to load messages to load to the topic from an external file
 
 🔗 [GCloud Pub/Sub REST API Documentation](https://cloud.google.com/pubsub/docs/reference/rest)
 
@@ -108,12 +111,24 @@ The following command-line arguments are available:
 The `projects` array defines the Pub/Sub projects.
 
 - **`name`** *(string)* - Name of the project.
+- **`schemas`** *(array, optional)* - List of schemas associated with the project.
+  - **`id`** *(string, optional)* - Unique identifier for the schema.
+  - **`name`** *(string, required)* - Name of the schema.
+  - **`type`** *(string, required)* - Type of the schema (e.g., `AVRO`, `PROTOBUF`).
+  - **`definition`** *(string, required)* - The schema definition in the specified type.
+  - **`revisionId`** *(string, optional)* - Identifier for the schema revision.
+  - **`revisionCreateTime`** *(string, optional)* - Timestamp when the schema revision was created.
 - **`topics`** *(array)* - List of topics within the project.
   - **`name`** *(string)* - Name of the topic.
   - **`labels`** *(map[string]string, optional)* - Labels added to the topic.
   - **`messageStoragePolicy`** *(MessageStoragePolicy, optional)* - Policy that should be applied for message storage.
     - **`allowedPersistenceRegions`** *([]string, optional)* - [Google Cloud Region's IDs](https://cloud.google.com/about/locations).
     - **`enforceInTransit`** *(bool, optional)* - If `true`, `allowedPersistenceRegions` is also used to enforce in-transit guarantees for messages.
+  - **`schemaSettings`** *(SchemaSettings, optional)* - Schema settings applied to the messages of this topic.
+    - **`schema`** *(string, required)* - The name of the schema that messages published should be validated against. Format is `projects/{project}/schemas/{schema}`. The value of this field will be `_deleted-schema_` if the schema has been deleted.
+    - **`encoding`** *(SchemaEncoding, required)* - The encoding of messages validated against the schema. (ENCODING_UNSPECIFIED, JSON, BINARY)
+    - **`firstSchemaId`** *(string, optional)* - Converts the SchemaId to the first RevisionId.
+    - **`lastSchemaId`** *(string, optional)* - Converts the SchemaId to the last RevisionId.
   - **`kmsKeyName`** *(string, optional)* - The resource name of the Cloud KMS CryptoKey to be used to protect access to messages published on this topic.
   - **`messageRetentionDuration`** *(string, optional)* - AVOID. This field does not seem to be accepted by the emulator but it exists in the REST API.
   - **`subscriptions`** *(array, optional)* - List of subscriptions for the topic.
